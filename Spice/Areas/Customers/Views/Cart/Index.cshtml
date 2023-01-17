@@ -1,0 +1,119 @@
+﻿@model Spice.Models.ViewModels.OrderDetailsCart
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    @if (Model.ListCart.Count > 0)
+    {
+        <br />
+        <input id="userId" asp-for="@Model.ListCart[0].ApplicationUserId" hidden>
+        <div class=" backgroundWhiteBorder">
+            <div class="container">
+                <div class="card">
+                    <div class="card-header  bg-dark text-light ms-0 row container ">
+                        <div class="col-6">
+                            <i class="fa fa-shopping-cart" style="color:aliceblue;"></i>&nbsp;
+                            Shopping Cart
+
+                        </div>
+                        <div class=" col-6 text-end">
+                            <a asp-area="Customers" asp-controller="Home" asp-action="Index" class="btn btn-outline-success btn-sm">Continue Shopping</a>
+
+                        </div>
+                    </div>
+                    <div class="card-body">
+                         @foreach (var item in Model.ListCart)
+                         {
+                            <div class="row">
+                                <div class="d-none d-lg-block col-lg-2 text-center py-2">
+                                    <img src="@item.MenuItems.Image" class=" rounded" width="120" height="80" />
+                                </div>
+                                <div class="col-12 text-sm-center col-lg-5 text-lg-start">
+                                    <h4><strong>@item.MenuItems.Name</strong></h4>
+                                    <h4><small>@item.MenuItems.Description</small></h4>
+                                </div>
+                                <div class="col-12 text-sm-center col-lg-5 text-lg-right row">
+                                    <div class="col-4  text-md-end" style="padding-top:35px;">
+                                        <h6><strong>$@item.MenuItems.Price<span class="text-muted">x</span>@item.Count</strong></h6>
+                                    </div>
+                                    <div class="col-6 col-sm-4 col-lg-6">
+                                        <div class="float-end mx-1" style="margin-top:20px;">
+                                            <button type="submit" class="btn btn-primary" asp-action="plus" asp-route-cartId="@item.Id"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                        <div class="float-end mx-1" style="margin-top:20px;">
+                                            <button type="submit" class="btn btn-danger" asp-action="minus" asp-route-cartId="@item.Id"><i class="fas fa-minus"></i></button>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-2 col-sm-4 col-lg-2  text-end" style="margin-top:20px;">
+                                        <button type="submit" class="btn btn-outline-danger" asp-action="remove" asp-route-cartId="@item.Id"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                         }
+                         <div class="row">
+                             <div class="col-12 col-md-5">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <input asp-for="@Model.OrderHeader.CouponsCode" id="txtCouponCode" class="form-control" placeholder="coupons code..."/>
+
+                                    </div>
+                                    <div class="col-5" style="margin-top:5px;">
+                                        <button type="submit" class="btn btn-sm form-control btn-outline-success" id="btnCoupon" asp-action="AddCoupon">Apply</button>
+                                        <button type="submit" class="btn btn-sm form-control btn-outline-danger" id="btnRemoveCoupon" style="display:none" asp-action="RemoveCoupon">
+                                            Remove Coupon
+                                        </button>
+
+                                    </div>
+                                   
+                                </div>
+                             </div> 
+                             <div class="col-12 col-md-6 offset-md-1 col-lg-4 offset-lg-3 pr-4">
+                                 <ul class=" list-group">
+                                     <li class="list-group-item d-flex justify-content-between bg-light">
+                                         <span class=" text-info">Total (USD)</span>
+                                         <strong class="text-info">$<span id=" txtOrderTotal">@Model.OrderHeader.OrderTotal </span></strong>
+                                     </li>
+                                 </ul>
+                             </div>
+                         </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <div class="col-12  col-lg-4 offset-lg-8 col-md-6 offset-md-6">
+                            <a asp-action="Summary" asp-area="Customers" asp-controller="Cart" class="btn btn-success form-control">Summary</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+        <div class="backgroundWhiteBorder">No Items Added To ShoppingCart.....</div>
+    }
+
+</form>
+
+
+
+@section Scripts{
+    <script>
+        $(function () {
+            var couponCode = document.getElementById("txtCouponCode").value;
+            if (couponCode.length > 0) {
+                document.getElementById('btnCoupon').style.display = 'none';
+                document.getElementById('btnRemoveCoupon').style.display = 'block';
+            }
+            else {
+                document.getElementById('btnCoupon').style.display = 'block';
+                document.getElementById('btnRemoveCoupon').style.display = 'none';
+            }
+        });
+    </script>
+}
+
